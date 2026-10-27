@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Calculadora y guía interactiva de integración numérica para los ejercicios de Métodos Numéricos.">
+    <title>Integración numérica | Métodos Numéricos</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#" aria-label="Inicio">MN<span>.</span></a>
+        <nav aria-label="Navegación principal">
+          <a href="#calculadora">Calculadora</a>
+          <a href="#ejercicios">Ejercicios</a>
+          <a href="#matriz">Matriz de resultados</a>
+        </nav>
+        <a class="header-link" href="informe-tecnico.md">Informe técnico</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">MÉTODOS NUMÉRICOS · INTEGRACIÓN</p>
+          <h1>De los datos<br>al <span>resultado.</span></h1>
+          <p class="hero-intro">Resuelve y comprende los ejercicios de integración numérica con datos editables, métodos comparables y procedimientos visibles.</p>
+          <a class="button button-light" href="#calculadora">Empezar a calcular <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-card" aria-label="Métodos disponibles">
+          <span class="hero-card-label">MÉTODOS IMPLEMENTADOS</span>
+          <div class="method-pill"><span>01</span> Trapecio compuesto</div>
+          <div class="method-pill"><span>02</span> Simpson 1/3</div>
+          <div class="method-pill"><span>03</span> Simpson 3/8</div>
+          <div class="hero-note">Validación de datos y pesos de integración incluidos.</div>
+        </div>
+      </section>
+
+      <section class="section calculator-section" id="calculadora">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 / CALCULADORA</p>
+            <h2>Prueba un ejercicio</h2>
+          </div>
+          <p>Selecciona un caso de la guía o escribe tus propios datos y parámetros.</p>
+        </div>
+
+        <div class="calculator-layout">
+          <form id="calculator-form" class="calculator-card">
+            <label for="exercise-select">Ejercicio de la guía</label>
+            <select id="exercise-select"></select>
+
+            <div class="exercise-summary" id="exercise-summary" aria-live="polite"></div>
+            <div class="exercise-note" id="exercise-note"></div>
+
+            <div id="quantity-group" class="form-group hidden">
+              <label for="quantity-select">Magnitud a integrar</label>
+              <select id="quantity-select"></select>
+            </div>
+
+            <div id="data-fields" class="form-group hidden">
+              <p class="field-title">Datos tabulados</p>
+              <label id="x-label" for="x-input">Nodos x (separados por coma o espacio)</label>
+              <textarea id="x-input" rows="2" spellcheck="false"></textarea>
+              <label id="y-label" for="y-input">Valores f(x) (en el mismo orden)</label>
+              <textarea id="y-input" rows="2" spellcheck="false"></textarea>
+              <p class="field-hint">Los nodos deben crecer y tener separación uniforme.</p>
+            </div>
+
+            <div id="function-fields" class="form-group hidden">
+              <p class="field-title">Función y parámetros</p>
+              <label for="function-input">Integrando f(x)</label>
+              <input id="function-input" type="text" spellcheck="false" autocomplete="off">
+              <p class="field-hint">Usa x, pi, e, +, -, *, /, ^, paréntesis y funciones sin(), cos(), sinh(), cosh(), sqrt(), exp(), ln(), log() o abs().</p>
+              <div class="parameter-grid">
+                <div><label for="a-input">Límite a</label><input id="a-input" type="number" step="any"></div>
+                <div><label for="b-input">Límite b</label><input id="b-input" type="number" step="any"></div>
+                <div><label for="n-input">Subintervalos n</label><input id="n-input" type="number" min="1" step="1"></div>
+              </div>
+            </div>
+
+            <div class="parameter-grid">
+              <div>
+                <label for="method-select">Método</label>
+                <select id="method-select">
+                  <option value="trapezoid">Trapecio compuesto</option>
+                  <option value="simpson13">Simpson 1/3</option>
+                  <option value="simpson38">Simpson 3/8</option>
+                  <option value="combined">Simpson combinado</option>
+                </select>
+              </div>
+              <div>
+                <label for="scale-input">Factor de conversión</label>
+                <input id="scale-input" type="number" value="1" step="any">
+              </div>
+            </div>
+            <p class="field-hint">El factor se aplica al resultado final. Ejemplo: mph·s a millas = 1/3600.</p>
+            <button class="button button-dark calculate-button" type="submit">Calcular integral <span aria-hidden="true">→</span></button>
+            <p class="form-error" id="form-error" role="alert"></p>
+          </form>
+
+          <div class="results-card">
+            <div class="result-topline">
+              <div><p class="eyebrow">RESULTADO NUMÉRICO</p><p id="method-label" class="result-method">Trapecio compuesto</p></div>
+              <span class="result-badge" id="result-badge">LISTO</span>
+            </div>
+            <output id="result-value" class="result-value" aria-live="polite">—</output>
+            <p id="result-unit" class="result-unit">Selecciona un ejercicio para comenzar</p>
+            <div class="result-divider"></div>
+            <div class="plot-heading"><span>Datos y área aproximada</span><span id="plot-label"></span></div>
+            <svg id="plot" class="plot" viewBox="0 0 640 230" role="img" aria-label="Gráfico de los nodos y el área integrada"></svg>
+            <p id="result-explanation" class="result-explanation">Elige un ejercicio; podrás cambiar los valores antes de calcular.</p>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-heading">
+            <div><p class="eyebrow">RASTRO DEL CÁLCULO</p><h3>Tabla de nodos y pesos</h3></div>
+            <p>La contribución de cada nodo suma el resultado aproximado.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>i</th><th>xᵢ</th><th>f(xᵢ)</th><th>Peso de integración</th><th>Contribución</th></tr></thead>
+              <tbody id="calculation-rows"><tr><td colspan="5" class="empty-row">La tabla aparecerá después del cálculo.</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section exercise-section" id="ejercicios">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 / GUÍA RESUELTA</p><h2>Nueve problemas, una herramienta</h2></div>
+          <p>Modelos, datos y unidades adaptados de la guía docente. Las adaptaciones a La Paz son didácticas.</p>
+        </div>
+        <div id="exercise-cards" class="exercise-grid"></div>
+      </section>
+
+      <section class="section matrix-section" id="matriz">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / COMPARACIÓN</p><h2>Matriz de resultados</h2></div>
+          <p>Valores de referencia del solucionario. Los redondeos pueden variar en las últimas cifras.</p>
+        </div>
+        <div class="table-card">
+          <div class="table-scroll">
+            <table class="matrix-table">
+              <thead><tr><th>Ejercicio / magnitud</th><th>Trapecio</th><th>Simpson válido</th><th>Referencia / exacto</th></tr></thead>
+              <tbody id="matrix-rows"></tbody>
+            </table>
+          </div>
+          <p class="matrix-footnote">El ejercicio 21 usa alturas digitalizadas ilustrativas. El 26 no se puede comparar sin la tabla oficial de anchuras. En el 27, la superficie indicada por el solucionario es una simplificación que no incluye la pendiente del perfil.</p>
+        </div>
+      </section>
+
+      <section class="validation-banner">
+        <div><p class="eyebrow">PRUEBA MÍNIMA DE LA GUÍA</p><h2>∫₀² x² dx = 8/3</h2><p>Comprueba el resultado exacto con n = 4 u n = 8 y compara la convergencia de los métodos.</p></div>
+        <button id="test-button" class="button button-light" type="button">Cargar prueba x² <span aria-hidden="true">→</span></button>
+      </section>
+    </main>
+    <footer><span>Integración numérica · Métodos Numéricos</span><a href="README.md">Cómo publicar el proyecto</a></footer>
+    <script src="app.js"></script>
+  </body>
+</html>
